@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Songbook — LilyPond Player</title>
+<title>LilyPond Editor</title>
 <style>
   :root{--bg:#f4f1ea;--ink:#1b2033;--muted:#6a6f82;--accent:#3346b8;--hl:#e0480c;--card:#fffdf8;--line:#ddd6c8}
   @media (prefers-color-scheme:dark){:root{--bg:#14161d;--ink:#e7e9f1;--muted:#99a0b5;--accent:#8c9cff;--hl:#ff8a4c;--card:#1d2029;--line:#333847}}
@@ -84,6 +84,14 @@
   .menu-pop label.opt{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 10px;color:var(--ink);font-size:.92rem}
   .songrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px}
   .songrow #songName{flex:1 1 180px}
+  table.cheat{width:100%;table-layout:fixed;border-collapse:collapse;font-size:.86rem;margin-top:8px}
+  table.cheat th{text-align:left;font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:12px 6px 4px;border-bottom:1px solid var(--line)}
+  table.cheat td{padding:6px;border-bottom:1px solid var(--line);vertical-align:top}
+  table.cheat td:first-child{width:42%}
+  table.cheat td{overflow-wrap:anywhere}
+  table.cheat pre{margin:4px 0;padding:10px;background:var(--bg);border-radius:8px;overflow-x:auto;font-size:.8rem;line-height:1.45}
+  @media (min-width:700px){ table.cheat td:first-child{width:34%} }
+  footer.foot{text-align:center;font-size:.8rem;color:var(--muted);margin:18px 0 8px}
   #saveStatus{flex-basis:100%;font-size:.82rem;margin:-2px 2px 0}
 </style>
 </head>
@@ -102,7 +110,7 @@
 </div>
 <main>
   <header class="top">
-    <h1>Songbook</h1>
+    <h1>LilyPond Editor</h1>
     <select id="examples" aria-label="Repertoire"><option value="">Repertoire…</option></select>
   </header>
 
@@ -157,6 +165,62 @@
   </div>
   <div class="card">
     <details>
+      <summary>LilyPond cheat sheet</summary>
+      <table class="cheat">
+        <tr><th colspan="2">Notes</th></tr>
+        <tr><td><code>c d e f g a b</code></td><td>Note names (Dutch). <code>fis</code> = F♯, <code>bes</code> = B♭, <code>es</code> = E♭, <code>as</code> = A♭</td></tr>
+        <tr><td><code>c'</code> · <code>c,</code></td><td>One octave up · one octave down</td></tr>
+        <tr><td><code>\fixed c' { … }</code></td><td>Plain letters mean the octave starting at middle C</td></tr>
+        <tr><td><code>\relative c' { … }</code></td><td>Each note is the closest one to the note before it</td></tr>
+        <tr><th colspan="2">Rhythm</th></tr>
+        <tr><td><code>c1 c2 c4 c8 c16</code></td><td>Whole, half, quarter, eighth, sixteenth. A note with no number repeats the last length</td></tr>
+        <tr><td><code>c4. c8</code></td><td>Dotted quarter + eighth</td></tr>
+        <tr><td><code>r4</code> · <code>R1</code> · <code>s4</code></td><td>Rest · full-bar rest · invisible spacer</td></tr>
+        <tr><td><code>\tuplet 3/2 { c8 d e }</code></td><td>Triplet</td></tr>
+        <tr><td><code>\grace c16 d4</code></td><td>Grace note (also <code>\acciaccatura</code>, <code>\appoggiatura</code>)</td></tr>
+        <tr><th colspan="2">Chords &amp; lines</th></tr>
+        <tr><td><code>&lt;c e g&gt;2</code> · <code>q</code></td><td>Chord · repeat the last chord</td></tr>
+        <tr><td><code>c4~ c</code></td><td>Tie</td></tr>
+        <tr><td><code>c8( d e f)</code></td><td>Slur</td></tr>
+        <tr><td><code>c8[ d e f]</code></td><td>Manual beam (beams are automatic otherwise)</td></tr>
+        <tr><th colspan="2">Expression</th></tr>
+        <tr><td><code>c4\p</code> <code>\mf</code> <code>\f</code> <code>\sfz</code></td><td>Dynamics</td></tr>
+        <tr><td><code>c2\&lt; e\!</code> · <code>\&gt;</code></td><td>Crescendo hairpin, ended by <code>\!</code> · diminuendo</td></tr>
+        <tr><td><code>c4-.</code> <code>-&gt;</code> <code>--</code> <code>-^</code></td><td>Staccato, accent, tenuto, marcato</td></tr>
+        <tr><td><code>c1\fermata</code> · <code>c4\trill</code></td><td>Fermata · trill</td></tr>
+        <tr><td><code>c4^"dolce"</code> · <code>c4-3</code></td><td>Text above · fingering</td></tr>
+        <tr><th colspan="2">Structure</th></tr>
+        <tr><td><code>\clef treble</code> · <code>bass</code></td><td>Clef</td></tr>
+        <tr><td><code>\key g \major</code> · <code>\key e \minor</code></td><td>Key signature</td></tr>
+        <tr><td><code>\time 3/4</code> · <code>\partial 4</code></td><td>Time signature · pickup (upbeat) length</td></tr>
+        <tr><td><code>\tempo "Andante" 4 = 90</code></td><td>Tempo marking</td></tr>
+        <tr><td><code>\bar "|."</code> · <code>\bar "||"</code></td><td>Final bar line · double bar line</td></tr>
+        <tr><td><code>\repeat volta 2 { … }<br>\alternative { { … } { … } }</code></td><td>Repeat with first and second endings</td></tr>
+        <tr><th colspan="2">Chord names</th></tr>
+        <tr><td><code>\chordmode { c1 a:m d:7 g:maj7 }</code></td><td>C, Am, D7, Gmaj7. Also <code>:dim</code>, <code>:aug</code>, <code>:sus4</code>, <code>:6</code>, <code>:9</code></td></tr>
+        <tr><td><code>c2/e</code> · <code>s4</code></td><td>Slash chord (bass note) · no chord over that beat</td></tr>
+        <tr><th colspan="2">Lyrics</th></tr>
+        <tr><td><code>Hel -- lo</code></td><td>Two syllables of one word</td></tr>
+        <tr><td><code>way __</code> · <code>_</code></td><td>Hold a syllable over several notes · skip a note</td></tr>
+        <tr><th colspan="2">Song template</th></tr>
+        <tr><td colspan="2"><pre>harmonies = \chordmode { g1 | c | d | g }
+melody = \fixed c' {
+  \key g \major \time 4/4
+  g4 a b c' | e'2 d' | a4 b c' a | g1 \bar "|."
+}
+words = \lyricmode { Here are the words of my song __ to sing }
+\score {
+  &lt;&lt;
+    \new ChordNames \harmonies
+    \new Staff \new Voice = "melody" \melody
+    \new Lyrics \lyricsto "melody" \words
+  &gt;&gt;
+}</pre></td></tr>
+      </table>
+    </details>
+  </div>
+  <div class="card">
+    <details>
       <summary>What's supported</summary>
       <ul>
         <li><b>Pitches &amp; octaves:</b> Dutch names (<code>fis</code>, <code>bes</code>, <code>es</code>, <code>cisis</code>), <code>'</code> <code>,</code>, <code>\relative</code>, <code>\fixed</code>, <code>\transpose</code>, forced accidentals <code>!</code> <code>?</code></li>
@@ -174,6 +238,7 @@
       </ul>
     </details>
   </div>
+  <footer class="foot">Copyright Brian Junker-Latocha 2026</footer>
 </main>
 <div id="qrModal" hidden>
   <div class="qrbox" role="dialog" aria-label="MIDI QR code">

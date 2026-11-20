@@ -58,6 +58,33 @@
   .svoice{justify-content:center;margin-bottom:6px}
   .sopen{display:inline-block;margin-top:12px;font-size:.85rem;color:var(--accent)}
   .hint{font-size:.8rem;color:var(--muted);margin:4px 2px 0}
+
+  /* ---- Songbook layout ---- */
+  header.top{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:4px 0 8px}
+  header.top h1{font-size:1.15rem;margin:0}
+  header.top select{flex:1 1 200px;max-width:340px}
+  #bar{gap:8px;flex-wrap:nowrap}
+  .grp{display:flex;align-items:center;gap:8px;flex:none}
+  .grow{flex:1 1 auto;min-width:0}
+  .grow #tempo{flex:1 1 auto;min-width:50px;width:auto}
+  #tv{min-width:2ch}
+  @media (max-width:520px){ #optMenu .lbl{display:none} #play{padding:9px 14px} }
+  details.menu{position:relative}
+  details.menu>summary{list-style:none;cursor:pointer;font-weight:600;border-radius:999px;padding:9px 14px;min-height:42px;display:flex;align-items:center;gap:6px;border:1.5px solid var(--accent);color:var(--accent);user-select:none}
+  details.menu>summary::-webkit-details-marker{display:none}
+  details.menu[open]>summary{background:var(--accent);color:#fff}
+  .menu-pop{position:absolute;z-index:15;top:calc(100% + 6px);min-width:220px;background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.18);padding:6px}
+  .menu-pop.right{right:0}
+  .menu-pop .sect{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:8px 10px 4px}
+  .menu-pop button.item{display:flex;width:100%;justify-content:flex-start;gap:10px;background:transparent;color:var(--ink);border:0;border-radius:8px;padding:9px 10px;min-height:38px;font-weight:500;text-align:left}
+  .menu-pop button.item:hover{background:var(--bg)}
+  .menu-pop button.item .ic{width:1.2em;text-align:center;opacity:.8}
+  .menu-pop button.item.danger{color:var(--hl)}
+  .menu-pop hr{border:0;border-top:1px solid var(--line);margin:6px 4px}
+  .menu-pop label.opt{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 10px;color:var(--ink);font-size:.92rem}
+  .songrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px}
+  .songrow #songName{flex:1 1 180px}
+  #saveStatus{flex-basis:100%;font-size:.82rem;margin:-2px 2px 0}
 </style>
 </head>
 <body>
@@ -74,28 +101,55 @@
   </div>
 </div>
 <main>
-  <header>
+  <header class="top">
     <h1>Songbook</h1>
     <select id="examples" aria-label="Repertoire"><option value="">Repertoire…</option></select>
   </header>
+
   <div id="bar">
-    <button id="play">▶ Play</button>
-    <button id="stop" class="sec">■</button>
-    <label>♩= <input id="tempo" type="range" min="30" max="240" value="90"><span id="tv">90</span></label>
-    <label><select id="voice"><option value="piano">Piano</option><option value="strings">Strings</option><option value="organ">Organ</option><option value="flute">Flute</option><option value="chip">Chiptune</option></select></label>
-    <button id="qrBtn" class="sec" title="Show the song as a MIDI QR code">QR</button>
-    <label><input id="loop" type="checkbox"> Loop</label>
-    <label><input id="follow" type="checkbox" checked> Follow</label>
-        <label>Size <input id="size" type="range" min="6" max="14" step="0.5" value="10"></label>
+    <div class="grp">
+      <button id="play">▶ Play</button>
+      <button id="stop" class="sec" aria-label="Stop">■</button>
+    </div>
+    <label class="grp grow">♩= <input id="tempo" type="range" min="30" max="240" value="90"><span id="tv">90</span></label>
+    <details class="menu" id="optMenu">
+      <summary aria-label="Playback and view options">⚙<span class="lbl"> Options</span></summary>
+      <div class="menu-pop right">
+        <div class="sect">Playback</div>
+        <label class="opt">Sound <select id="voice"><option value="piano">Piano</option><option value="strings">Strings</option><option value="organ">Organ</option><option value="flute">Flute</option><option value="chip">Chiptune</option></select></label>
+        <label class="opt">Loop <input id="loop" type="checkbox"></label>
+        <label class="opt">Follow along <input id="follow" type="checkbox" checked></label>
+        <hr>
+        <div class="sect">View</div>
+        <label class="opt">Score size <input id="size" type="range" min="6" max="14" step="0.5" value="10"></label>
+      </div>
+    </details>
   </div>
+
   <div class="card"><div id="score"></div></div>
   <div class="hint">Tap any note to play from there.</div>
+
   <div class="card" style="margin-top:8px">
-    <div class="saverow">
+    <div class="songrow">
       <input id="songName" placeholder="Song name" aria-label="Song name" autocomplete="off">
       <button id="save">Save</button>
-      <button id="saveNew" class="sec">Save as new</button>
-      <button id="del" class="sec danger">Delete</button>
+      <details class="menu" id="fileMenu">
+        <summary>File ▾</summary>
+        <div class="menu-pop right">
+          <div class="sect">Song</div>
+          <button class="item" id="saveNew"><span class="ic">＋</span>Save as new song</button>
+          <button class="item" id="impLy"><span class="ic">📂</span>Open .ly file…</button>
+          <hr>
+          <div class="sect">Export</div>
+          <button class="item" id="expPng"><span class="ic">🖼</span>Score as PNG image</button>
+          <button class="item" id="qrBtn"><span class="ic">▦</span>MIDI QR code</button>
+          <button class="item" id="dlMid"><span class="ic">♪</span>MIDI file (.mid)</button>
+          <button class="item" id="dlLy"><span class="ic">⤓</span>LilyPond file (.ly)</button>
+          <hr>
+          <button class="item danger" id="del"><span class="ic">🗑</span>Delete song</button>
+        </div>
+      </details>
+      <input type="file" id="impFile" accept=".ly,.ily,.txt,text/plain" hidden>
       <span id="saveStatus"></span>
     </div>
     <textarea id="src" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off"></textarea>
@@ -126,8 +180,8 @@
     <div class="qrhead"><b id="qrTitle">MIDI QR code</b><button id="qrClose" class="sec">Close</button></div>
     <img id="qrImg" alt="QR code containing the song as a MIDI file">
     <div id="qrInfo" class="qrinfo"></div>
-    <div class="qrlink"><input id="qrText" readonly aria-label="Text in the QR code"><button id="qrCopy" class="sec">Copy text</button></div>
-    <p class="qrnote">The code holds the song as a standard MIDI file written as base64 text (it starts with <code>TVRoZ</code>). Any QR scanner reads it as text. To listen, paste the text into any base64 decoder, save the result as <code>song.mid</code>, and open it in a MIDI player. Long-press or right-click the code to save it as an image; print it at least 4–5 cm wide.</p>
+    <div class="qrlink"><input id="qrText" readonly aria-label="Text in the QR code"><button id="qrCopy" class="sec">Copy text</button><button id="qrPng" class="sec">Save PNG</button></div>
+    <p class="qrnote">The code holds the song as a standard MIDI file written as base64 text (it starts with <code>TVRoZ</code>). Any QR scanner reads it as text. To listen, paste the text into any base64 decoder, save the result as <code>song.mid</code>, and open it in a MIDI player. Print it at least 4–5 cm wide.</p>
   </div>
 </div>
 <script>
@@ -2640,8 +2694,8 @@ async function saveSong(asNew) {
 let delArmed = null;
 async function deleteSong() {
   if (!dbApi || !canWrite || !currentId) return;
-  if (!delArmed) { delArmed = setTimeout(() => { delArmed = null; $('del').textContent = 'Delete'; }, 3000); $('del').textContent = 'Tap again to delete'; return; }
-  clearTimeout(delArmed); delArmed = null; $('del').textContent = 'Delete';
+  if (!delArmed) { delArmed = setTimeout(() => { delArmed = null; $('del').innerHTML = '<span class="ic">🗑</span>Delete song'; }, 3000); $('del').innerHTML = '<span class="ic">🗑</span>Tap again to delete'; return; }
+  clearTimeout(delArmed); delArmed = null; $('del').innerHTML = '<span class="ic">🗑</span>Delete song'; document.getElementById('fileMenu').open = false;
   const id = currentId; updateStatus('Deleting…');
   try {
     await dbApi.doc('songs/' + id).delete();
@@ -2728,7 +2782,7 @@ document.addEventListener('DOMContentLoaded', init);
 
 "use strict";
 // =====================================================================
-//  Extras for the stand-alone version: file downloads and import.
+//  Songbook extras: menus, file downloads/import, score PNG export.
 // =====================================================================
 function ghDownload(filename, data, type) {
   const blob = data instanceof Blob ? data : new Blob([data], { type: type || 'application/octet-stream' });
@@ -2738,33 +2792,70 @@ function ghDownload(filename, data, type) {
   setTimeout(() => URL.revokeObjectURL(url), 4000);
 }
 function ghSafeName() { return (($('songName').value || '').trim() || 'song').replace(/[\\/:*?"<>|]+/g, '').slice(0, 80) || 'song'; }
+
+// Render a fresh, print-width copy of the score (independent of the screen size) and save it as PNG.
+async function exportScorePng() {
+  if (!parsedCur) { updateStatus('Nothing to export yet'); return; }
+  const WIDTH = 1000, S = 10, SCALE = 2.5, PAD = 36;
+  let out;
+  try { out = engrave(expand(parsedCur, 'render'), WIDTH - PAD * 2, S, 'classic'); }
+  catch (e) { updateStatus('Couldn\'t export: ' + e.message); return; }
+  const tmp = document.createElement('div'); tmp.innerHTML = out.svg;
+  const svg = tmp.querySelector('svg');
+  svg.setAttribute('style', 'color:#000');
+  svg.querySelectorAll('rect[fill="transparent"]').forEach(r => r.remove());
+  const W = +svg.getAttribute('width'), H = +svg.getAttribute('height');
+  const h = parsedCur.header || {};
+  const title = h.title || ($('songName').value || '').trim();
+  const sub = h.subtitle || '', poet = h.poet || '', comp = [h.composer, h.arranger].filter(Boolean).join(' · ');
+  const headH = (title ? 40 : 0) + (sub ? 24 : 0) + ((comp || poet) ? 26 : 0) + (title || sub || comp || poet ? 12 : 0);
+  const cw = W + PAD * 2, ch = H + headH + PAD * 2;
+  const c = document.createElement('canvas'); c.width = Math.round(cw * SCALE); c.height = Math.round(ch * SCALE);
+  const g = c.getContext('2d'); g.scale(SCALE, SCALE);
+  g.fillStyle = '#fff'; g.fillRect(0, 0, cw, ch); g.fillStyle = '#000';
+  let y = PAD;
+  const serif = 'Georgia, "Times New Roman", serif';
+  if (title) { g.font = `bold 28px ${serif}`; g.textAlign = 'center'; y += 30; g.fillText(title, cw / 2, y); y += 10; }
+  if (sub) { g.font = `18px ${serif}`; g.textAlign = 'center'; y += 20; g.fillText(sub, cw / 2, y); y += 4; }
+  if (comp || poet) { g.font = `15px ${serif}`; y += 20; g.textAlign = 'left'; g.fillText(poet, PAD, y); g.textAlign = 'right'; g.fillText(comp, cw - PAD, y); y += 6; }
+  const xml = new XMLSerializer().serializeToString(svg);
+  const img = new Image();
+  try {
+    await new Promise((res, rej) => { img.onload = res; img.onerror = () => rej(new Error('could not draw the score')); img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(xml); });
+  } catch (e) { updateStatus('Couldn\'t export: ' + e.message); return; }
+  g.drawImage(img, PAD, PAD + headH, W, H);
+  c.toBlob(b => { if (b) ghDownload(ghSafeName() + '.png', b); else updateStatus('Couldn\'t export the image'); }, 'image/png');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-  // song row: download / import LilyPond
-  const row = document.querySelector('.saverow');
-  const mk = (id, label) => { const b = document.createElement('button'); b.id = id; b.className = 'sec'; b.textContent = label; return b; };
-  const dl = mk('dlLy', 'Download .ly'), imp = mk('impLy', 'Open file…'), dlMid = mk('dlMid', 'Download .mid');
-  const file = document.createElement('input'); file.type = 'file'; file.accept = '.ly,.ily,.txt,text/plain'; file.hidden = true;
-  row.insertBefore(dl, $('saveStatus')); row.insertBefore(dlMid, $('saveStatus')); row.insertBefore(imp, $('saveStatus')); row.appendChild(file);
-  dl.onclick = () => ghDownload(ghSafeName() + '.ly', $('src').value, 'text/plain');
-  dlMid.onclick = () => {
+  const menus = [...document.querySelectorAll('details.menu')];
+  const closeMenus = except => menus.forEach(m => { if (m !== except) m.open = false; });
+  menus.forEach(m => m.addEventListener('toggle', () => { if (m.open) closeMenus(m); }));
+  document.addEventListener('click', e => { if (!e.target.closest('details.menu')) closeMenus(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenus(); });
+  // close the File menu after an action (Delete keeps it open for its second tap)
+  document.querySelectorAll('#fileMenu .item').forEach(b => b.addEventListener('click', () => {
+    if (b.id === 'del' && /again/i.test(b.textContent)) return;
+    if (b.id !== 'del') setTimeout(() => closeMenus(), 0);
+  }));
+
+  $('dlLy').onclick = () => ghDownload(ghSafeName() + '.ly', $('src').value, 'text/plain');
+  $('dlMid').onclick = () => {
     if (!parsedCur) return;
-    const pbq = buildPlayback(parsedCur); if (!pbq.notes.length) return;
+    const pbq = buildPlayback(parsedCur); if (!pbq.notes.length) { updateStatus('No notes to export yet'); return; }
     ghDownload(ghSafeName() + '.mid', buildMidi(pbq, $('songName').value.trim()), 'audio/midi');
   };
-  imp.onclick = () => file.click();
-  file.onchange = async () => {
-    const f = file.files[0]; if (!f) return;
+  $('expPng').onclick = exportScorePng;
+  $('impLy').onclick = () => $('impFile').click();
+  $('impFile').onchange = async () => {
+    const f = $('impFile').files[0]; if (!f) return;
     const text = await f.text();
     stopPlay(); currentId = null; savedSrc = null; savedName = null;
     $('src').value = text; $('songName').value = f.name.replace(/\.[^.]+$/, '');
-    $('examples').value = ''; renderNow(); updateStatus('Opened ' + f.name + ' — press Save as new to keep it');
-    file.value = '';
+    $('examples').value = ''; renderNow(); updateStatus('Opened ' + f.name + ' — choose File ▸ Save as new song to keep it');
+    $('impFile').value = '';
   };
-  // QR pop-up: save image
-  const qrRow = document.querySelector('.qrlink');
-  const savePng = mk('qrPng', 'Save PNG');
-  qrRow.appendChild(savePng);
-  savePng.onclick = () => { const src = $('qrImg').src; if (!src) return; fetch(src).then(r => r.blob()).then(b => ghDownload(ghSafeName() + '-qr.png', b)); };
+  $('qrPng').onclick = () => { const src = $('qrImg').src; if (!src) return; fetch(src).then(r => r.blob()).then(b => ghDownload(ghSafeName() + '-qr.png', b)); };
 });
 
 </script>

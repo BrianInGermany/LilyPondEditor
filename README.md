@@ -2,9 +2,7 @@
 
 A single-page web app for writing, viewing and playing songs written in [LilyPond](https://lilypond.org) notation, right in the browser. Type or paste LilyPond, see the score engraved as you type, hear it played back, and turn any song into a printable QR code that carries the music itself.
 
-Everything lives in one self-contained `index.html`: no build step, no server, no external libraries or fonts.
-
-**Live version:** `https://<your-username>.github.io/<repo-name>/`
+**Live version:** `https://brianingermany.github.io/lilypondeditor/`
 
 ---
 

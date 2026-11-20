@@ -4,8 +4,8 @@ A single-page web app for writing, viewing and playing songs written in [LilyPon
 
 ## Live Site
 
-[https://brianingermany.github.io/LilyPondEditor/](brianingermany.github.io/l
-LilyPondEditor/)
+[brianingermany.github.io/LilyPondEditor](https://brianingermany.github.io/LilyPondEditor/)
+
 ---
 
 ## Features
